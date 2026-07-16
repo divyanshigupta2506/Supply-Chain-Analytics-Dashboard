@@ -94,5 +94,3 @@ This project focuses on analyzing the complete supply chain process by combining
 - Business Intelligence
 
 
-
-⭐ If you found this project useful, consider giving it a star.
