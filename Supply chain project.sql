@@ -7,7 +7,7 @@ ON chain_supply.product.SKU = chain_supply.revenue.SKU
 GROUP BY chain_supply.product.`Product type`
 ORDER BY total_revenue DESC;
 
-/* Q2 I want to know the Top 10 products (SKUs) that generated the highest revenue.*/
+/* Q2 Top 10 products (SKUs) that generated the highest revenue.*/
 SELECT chain_supply.revenue.`Revenue generated` , chain_supply.revenue.SKU
 FROM chain_supply.revenue
 ORDER BY chain_supply.revenue.`Revenue generated` DESC
@@ -21,7 +21,7 @@ FROM chain_supply.revenue
 GROUP BY chain_supply.revenue.`Customer demographics` 
 ORDER BY Total_Revenue DESC;
 
-/*Q4 Show me all products whose revenue is above the average revenue of all products*/
+/*Q4 all products whose revenue is above the average revenue of all products*/
 
 SELECT chain_supply.revenue.SKU,
        chain_supply.revenue.`Revenue generated`
@@ -31,7 +31,7 @@ WHERE  chain_supply.revenue.`Revenue generated`  > (
 						  FROM chain_supply.revenue
  );                         
 					
-/*Q5 "Within each Product Category, show me the Top 3 highest revenue products."*/
+/*Q5 "Within each Product Category, the Top 3 highest revenue products."*/
 
 WITH revenue_products AS (
     SELECT 
@@ -83,7 +83,7 @@ SELECT
 FROM chain_supply.revenue
 GROUP BY Revenue_Category;
 
-/*Q8 Rank all SKUs from highest to lowest revenue using a window function.*/
+/*Q8 Rank  SKUs from highest to lowest revenue.*/
 
 SELECT chain_supply.revenue.`Revenue generated` , SKU,
       RANK() OVER( ORDER BY chain_supply.revenue.`Revenue generated`DESC ) AS Revenue_Rank
@@ -97,7 +97,7 @@ SELECT SKU,chain_supply.revenue.`Revenue generated`,
         OVER(ORDER BY  chain_supply.revenue.`Revenue generated` DESC) AS Revenue_Difference
 FROM chain_supply.revenue;
 
-/* Q10 Find all SKUs whose revenue is higher than the average revenue, and show how much higher they are than the average.*/
+/* Q10  SKUs whose revenue is higher than the average revenue, and how much higher they are than the average.*/
 WITH  higher_revenue AS (
 SELECT 
        AVG(chain_supply.revenue.`Revenue generated`) AS average_revenue
@@ -110,7 +110,7 @@ CROSS JOIN higher_revenue
 WHERE chain_supply.revenue.`Revenue generated` > average_revenue
 ORDER BY above_average_amount DESC;
 
-/*Q11 "For each Product Type, show me the SKU that has the highest stock level*/
+/*Q11 "For each Product Type, show  the SKU that has the highest stock level*/
 WITH stock_rank  AS (
 SELECT chain_supply.product.`product type`,
        SKU ,
@@ -141,7 +141,7 @@ FROM chain_supply.product
 INNER JOIN chain_supply.revenue
 ON chain_supply.product.SKU=chain_supply.revenue.SKU ;
 
-/* Q13 Find all products whose manufacturing cost is higher than the average manufacturing cost of their own product type.*/
+/* Q13 products whose manufacturing cost is higher than the average manufacturing cost of their own product type.*/
 SELECT 
     p.SKU,
     p.`Product type`,
@@ -159,7 +159,7 @@ WHERE m.`Manufacturing costs` > (
 ORDER BY p.`Product type`, m.`Manufacturing costs` DESC;
 
 
-/*Q14 Show me the cumulative (running) revenue for products when they are ordered from highest revenue to lowest revenue.*/
+/*Q14 Show  the cumulative (running) revenue for products when they are ordered from highest revenue to lowest revenue.*/
 
 SELECT  SKU, chain_supply.revenue.`Revenue generated` ,
         SUM(chain_supply.revenue.`Revenue generated`)OVER ( ORDER BY chain_supply.revenue.`Revenue generated` DESC) AS Running_Revenue
@@ -227,7 +227,7 @@ FROM chain_supply.product
 INNER JOIN chain_supply.revenue
 ON chain_supply.product.SKU=chain_supply.revenue.SKU;
 
-/* Q19 Within each Product Type, rank products based on revenue. If two products have the same revenue, they should receive the same rank.*/
+/* Q19 Within each Product Type, rank products based on revenue.*/
 SELECT   chain_supply.product.SKU, 
 		 chain_supply.product.`product type`,
          chain_supply.revenue.`Revenue generated`,
@@ -238,7 +238,7 @@ FROM chain_supply.product
 INNER JOIN chain_supply.revenue
 ON chain_supply.product.SKU=chain_supply.revenue.SKU;	
         
-/*Q20 Show me all products that have never generated any revenue.*/
+/*Q20 all products that have never generated any revenue.*/
 
 SELECT   chain_supply.product.SKU, 
 		 chain_supply.product.`product type`,
@@ -248,7 +248,7 @@ LEFT JOIN chain_supply.revenue
 ON chain_supply.product.SKU=chain_supply.revenue.SKU
 WHERE  chain_supply.revenue.`Revenue generated` IS NULL;
 
-/*Q21 Show the supplier(s) whose manufacturing cost is the highest within their own Product Type? */
+/*Q21  the supplier(s) whose manufacturing cost is the highest within their own Product Type? */
 WITH manufacturing_ranked AS (
     SELECT 
         p.`Product type`,
@@ -273,7 +273,7 @@ SELECT
 FROM manufacturing_ranked
 WHERE Manufacturing_Rank = 1;
 
-/* Q22 Show only those Product Types whose total revenue is greater than 180,000.*/
+/* Q22 Show those Product Types whose total revenue is greater than 180,000.*/
 SELECT   chain_supply.product.`product type`,
          SUM(chain_supply.revenue.`Revenue generated`) AS Total_Revenue
 FROM chain_supply.product
@@ -381,8 +381,7 @@ SELECT
 FROM supplier_products
 WHERE supplier_rank = 1;
 
-/* Q28 Show each supplier's manufacturing cost along 
-with the previous supplier's manufacturing cost when suppliers are ordered by manufacturing cost.*/
+/* Q28 each supplier's manufacturing cost along  with the previous supplier's manufacturing cost when suppliers are ordered by manufacturing cost.*/
 
 SELECT  m.`Supplier name`, m.`Manufacturing costs`,
         LAG (m.`Manufacturing costs`) OVER( ORDER BY m.`Manufacturing costs` DESC) AS  previous_manufacturing_cost,
@@ -421,8 +420,7 @@ FROM lowest_revenue
 WHERE revenue_rank = 1
 ORDER BY `Product type`;
 
-/* Q31 "For every Supplier, calculate the total manufacturing cost and show the percentage contribution of each 
-supplier to the overall manufacturing cost."*/
+/* Q31 "For every Supplier, calculate the total manufacturing cost and show the percentage contribution of each  supplier to the overall manufacturing cost."*/
 
 WITH overall_manu AS (
     SELECT
